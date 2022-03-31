@@ -5,7 +5,8 @@ const query=require('../quries/user')
 const Validator=require('validatorjs')
 const generateToken=require('../utils/jwt_token')
 const jwt=require('jsonwebtoken')
-
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 class UserController {
 
     async createUser(req, res) {
@@ -54,14 +55,22 @@ class UserController {
         try {
           _.pool.query(query.userCheck,[req.body.email],(err,result)=>{
             if(result.length!=0){
-             
+                bcrypt.genSalt(saltRounds, function(err, salt) {
+                  bcrypt.hash('heloooo', salt, function(err, hash) {
+                    console.log(hash);
+                  });
+              });
+
+              bcrypt.compare('heloooo1', '$2b$10$erBXZkGWttHMdxD1E1SHj.2PKATyj3HsPp9O/K4VuGNOxa4eAztOO', function(err, result1) {
+              console.log(result1);
+            });
               _.pool.query(query.passwordCheck,[req.body.email],(err,result)=>{
       
                 if(!err){
                   var name='';
                   if(result[0]['password']==req.body.password){
                     _.pool.query(query.nameGet,[req.body.email],(err,result)=>{
-                      name=result[0]['name'];
+                      name=result[0]['name']; 
                       
                     })
                     res.status(200).json({ message: "Login successfully" ,token:generateToken(name,req.body.email) });

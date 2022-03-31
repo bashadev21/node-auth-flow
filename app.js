@@ -1,6 +1,5 @@
 const express=require('express')
 const bodyParser=require('body-parser')
-// const mysql=require('mysql')
 const _=require('./config/config')
 const app=express()
 const routerv1 = require('./routes/routerv1');
